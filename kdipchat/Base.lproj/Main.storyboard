@@ -69,6 +69,9 @@
                                     <action selector="doLogin:" destination="GQU-nq-sNN" eventType="touchUpInside" id="cRt-aD-SB4"/>
                                 </connections>
                             </button>
+                            <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uvc-Kf-XXz">
+                                <rect key="frame" x="16" y="234" width="382" height="2"/>
+                            </progressView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -78,12 +81,15 @@
                             <constraint firstItem="3ps-I2-uAr" firstAttribute="top" secondItem="qEh-Kb-adk" secondAttribute="bottom" constant="23" id="Ejx-bl-dlx"/>
                             <constraint firstItem="3ps-I2-uAr" firstAttribute="trailing" secondItem="dTQ-sM-K3h" secondAttribute="trailingMargin" id="FYO-kk-mOL"/>
                             <constraint firstItem="GmP-s4-lAH" firstAttribute="top" secondItem="PZF-Br-txd" secondAttribute="bottom" constant="3" id="L8A-BU-mda"/>
+                            <constraint firstItem="uvc-Kf-XXz" firstAttribute="leading" secondItem="dTQ-sM-K3h" secondAttribute="leadingMargin" id="XQS-Ob-4C9"/>
                             <constraint firstAttribute="centerX" secondItem="GmP-s4-lAH" secondAttribute="centerX" constant="-0.5" id="Zlf-MN-Gtx"/>
                             <constraint firstItem="3ps-I2-uAr" firstAttribute="leading" secondItem="dTQ-sM-K3h" secondAttribute="leadingMargin" id="e8Y-8T-b2i"/>
                             <constraint firstItem="LAJ-wX-Cw4" firstAttribute="top" secondItem="3ps-I2-uAr" secondAttribute="bottom" constant="8" id="qAj-gF-50C"/>
+                            <constraint firstItem="uvc-Kf-XXz" firstAttribute="top" secondItem="LAJ-wX-Cw4" secondAttribute="bottom" constant="8" id="qIE-sV-ucE"/>
                             <constraint firstAttribute="centerX" secondItem="PZF-Br-txd" secondAttribute="centerX" id="uxQ-R8-J1B"/>
                             <constraint firstItem="AUJ-dB-u3n" firstAttribute="top" secondItem="GmP-s4-lAH" secondAttribute="bottom" constant="46" id="vAh-8P-9U2"/>
                             <constraint firstItem="qEh-Kb-adk" firstAttribute="leading" secondItem="dTQ-sM-K3h" secondAttribute="leadingMargin" id="vhk-bo-Edk"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="uvc-Kf-XXz" secondAttribute="trailing" id="whZ-aS-rXP"/>
                             <constraint firstAttribute="centerX" secondItem="LAJ-wX-Cw4" secondAttribute="centerX" constant="-0.5" id="yTL-X5-tlE"/>
                             <constraint firstItem="qEh-Kb-adk" firstAttribute="top" secondItem="M5U-YU-05j" secondAttribute="bottom" constant="85" id="zAf-M1-LrD"/>
                         </constraints>
@@ -91,18 +97,19 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                     <connections>
                         <outlet property="password" destination="3ps-I2-uAr" id="vkV-sO-Ixs"/>
+                        <outlet property="progressBar" destination="uvc-Kf-XXz" id="95B-jM-ahb"/>
                         <outlet property="username" destination="qEh-Kb-adk" id="gWc-zi-sKB"/>
                         <segue destination="d2B-Nv-VB6" kind="presentation" identifier="showMainTab" id="0nL-2R-sve"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gME-cH-Q3H" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2915" y="-603"/>
+            <point key="canvasLocation" x="-2902" y="-603"/>
         </scene>
-        <!--View Controller-->
+        <!--Friend List View Controller-->
         <scene sceneID="LJL-4z-81s">
             <objects>
-                <viewController id="UPv-Fh-XCy" sceneMemberID="viewController">
+                <viewController id="UPv-Fh-XCy" customClass="FriendList_ViewController" customModule="kdipchat" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="tL2-n1-YuS"/>
                         <viewControllerLayoutGuide type="bottom" id="blY-c3-uuO"/>
@@ -112,7 +119,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="66" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="pbe-h9-LIH">
-                                <rect key="frame" x="0.0" y="64" width="414" height="623"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="687"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cellfriendlist" rowHeight="60" id="BbS-vV-iqd" customClass="FriendList_TableViewCell" customModule="kdipchat" customModuleProvider="target">
@@ -145,24 +152,37 @@
                                                 <constraint firstItem="hEy-2o-n58" firstAttribute="top" secondItem="Ytm-fB-QTA" secondAttribute="topMargin" constant="-3" id="qcv-hS-aI6"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="avatar" destination="hEy-2o-n58" id="9hz-79-clm"/>
+                                            <outlet property="friendName" destination="eDQ-dT-Y2y" id="UhV-o4-oKq"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
-                                    <outlet property="dataSource" destination="UPv-Fh-XCy" id="L2g-EC-dWB"/>
-                                    <outlet property="delegate" destination="UPv-Fh-XCy" id="Cxy-7G-iyA"/>
+                                    <outlet property="dataSource" destination="UPv-Fh-XCy" id="FU2-BB-Le5"/>
+                                    <outlet property="delegate" destination="UPv-Fh-XCy" id="W8f-n1-azy"/>
                                 </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="pbe-h9-LIH" firstAttribute="top" secondItem="tL2-n1-YuS" secondAttribute="bottom" id="1kM-U9-EjP"/>
+                            <constraint firstItem="pbe-h9-LIH" firstAttribute="top" secondItem="tL2-n1-YuS" secondAttribute="bottom" constant="-64" id="VOp-bv-t4M"/>
+                            <constraint firstItem="pbe-h9-LIH" firstAttribute="top" secondItem="tL2-n1-YuS" secondAttribute="bottom" id="VgG-Av-CGE"/>
                             <constraint firstItem="blY-c3-uuO" firstAttribute="top" secondItem="pbe-h9-LIH" secondAttribute="bottom" id="ftA-zi-h2a"/>
                             <constraint firstItem="pbe-h9-LIH" firstAttribute="leading" secondItem="sFd-f8-2dY" secondAttribute="leadingMargin" constant="-16" id="m1R-pG-8KM"/>
                             <constraint firstAttribute="trailingMargin" secondItem="pbe-h9-LIH" secondAttribute="trailing" constant="-16" id="tuB-Sq-XSC"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="1kM-U9-EjP"/>
+                                <exclude reference="VgG-Av-CGE"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="swk-bH-M7y">
                         <nil key="title"/>
+                        <barButtonItem key="backBarButtonItem" title="Contact" id="dFN-6T-nH2"/>
                         <barButtonItem key="leftBarButtonItem" systemItem="search" id="828-XX-nxA"/>
                         <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="B6q-W6-ES4">
                             <rect key="frame" x="125" y="7" width="165" height="30"/>
@@ -176,6 +196,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="searchDisplayController" destination="wgF-HN-OZ5" id="O89-P4-3b6"/>
+                        <segue destination="vXZ-lx-hvc" kind="show" identifier="showSingleChat" id="amW-8v-yKV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oSR-k7-HPg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -238,7 +259,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="273.75" y="-269.36619718309856"/>
+            <point key="canvasLocation" x="-43" y="-603"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="BpB-dj-AUA">
@@ -398,7 +419,9 @@
                             <outlet property="delegate" destination="xoe-Kn-z5p" id="LkG-gc-XnD"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="oi5-T4-Ik6"/>
+                    <navigationItem key="navigationItem" id="oi5-T4-Ik6">
+                        <barButtonItem key="backBarButtonItem" title="History" id="dnJ-Fa-nZO"/>
+                    </navigationItem>
                     <connections>
                         <segue destination="vXZ-lx-hvc" kind="show" identifier="showSingleChat" id="sTG-hC-k1E"/>
                     </connections>
@@ -411,4 +434,7 @@
     <resources>
         <image name="no-avatar" width="100" height="100"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="sTG-hC-k1E"/>
+    </inferredMetricsTieBreakers>
 </document>

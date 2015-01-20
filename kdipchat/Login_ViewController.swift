@@ -13,6 +13,10 @@ class Login_ViewController: UIViewController, ChatDelegate {
     
     @IBOutlet weak var username: UITextField!
     @IBOutlet weak var password: UITextField!
+    @IBOutlet weak var progressBar: UIProgressView!
+    
+    var progressCount: Float = 0
+    var progressTotal: Float = 0
     
     var DelegateApp = UIApplication.sharedApplication().delegate as AppDelegate
     var isLoad = false
@@ -22,8 +26,6 @@ class Login_ViewController: UIViewController, ChatDelegate {
         DelegateApp.chatDelegate = self
         
     }
-    
-    
     
     override func viewDidAppear(animated: Bool) {
         self.isLoad = false
@@ -38,21 +40,53 @@ class Login_ViewController: UIViewController, ChatDelegate {
         DelegateApp.onBeginLogin(self.username.text, password: self.password.text)
     }
     
-    func chatDelegate(didLogin isLogin: Bool, jid: String, name: String) {
+    func chatDelegate(didLogin isLogin: Bool, isFirstInit: Bool, jid: String, name: String) {
         if isLogin {
-            if !isLoad {
-                isLoad = true
-                self.performSegueWithIdentifier("showMainTab", sender: self)
+            if isFirstInit {
+                // Request VCard
+                var fList = ChatConversation.getFriendList().getList()
+                var iq = XMPPIQ()
+                var vcard = DDXMLElement.elementWithName("vCard") as DDXMLElement
+                if fList.count <= 0 {
+                    self.performSegueWithIdentifier("showMainTab", sender: self)
+                    return
+                }
+                self.progressTotal = Float(fList.count)
+                self.progressCount = 0
+                self.progressBar.setProgress(0, animated: false)
+                self.progressBar.hidden = false
+                for friends in fList
+                {
+                    println(friends.jid)
+                    iq = XMPPIQ()
+                    vcard = DDXMLElement.elementWithName("vCard") as DDXMLElement
+                    iq.addAttributeWithName("from", stringValue: "\(jid)")
+                    iq.addAttributeWithName("to", stringValue: "\(friends.jid)")
+                    iq.addAttributeWithName("type", stringValue: "get")
+                    iq.addAttributeWithName("id", stringValue: "requestvcard")
+                    vcard.addAttributeWithName("xmlns", stringValue: "vcard-temp")
+                    iq.addChild(vcard)
+                    DelegateApp.xmppStream.sendElement(iq)
+                }
+                
+            }else{
+                if !isLoad {
+                    isLoad = true
+                    self.performSegueWithIdentifier("showMainTab", sender: self)
+                }
             }
+            
+            
         }
     }
     
-    func chatDelegate(didBuddyListReceived buddylist: NSMutableArray) {
-        
-    }
-    
-    func chatDelegate(didMessageReceived message: String) {
-        
+    func chatDelegate(friendId: String, friendName: String, friendAvatar: String) {
+        self.progressCount++
+        self.progressBar.setProgress((self.progressCount/self.progressTotal), animated: false)
+        ChatConversation.UpdateFriend(friendId, fullname: friendName, avatar: friendAvatar)
+        if self.progressCount >= self.progressTotal {
+            self.performSegueWithIdentifier("showMainTab", sender: self)
+        }
     }
 
     /*

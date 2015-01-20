@@ -86,7 +86,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
     
     func getJabberID()->String
     {
-        return splitJabberId("\(self.xmppStream.myJID)")["fullJID"]!
+        return XmppUtility.splitJabberId("\(self.xmppStream.myJID)")["fullJID"]!
+    }
+    
+    func getJabberName()->String
+    {
+        return XmppUtility.splitJabberId("\(self.xmppStream.myJID)")["accountName"]!
     }
     
     func onBeginLogin(jabberID: String, password: String)
@@ -131,7 +136,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
     
     func xmppStreamDidAuthenticate(sender: XMPPStream!) {
         println("Authenticated")
-        self.chatDelegate(didLogin: true, jid: "\(sender.myJID)", name: "\(sender.myJID)")
+        
         
         // SET User Presence to Online
         var presence = XMPPPresence()
@@ -144,28 +149,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
         xmppStream!.sendElement(presence)
         
         //Check Friend List
-        let conversation = ChatConversation()
-        let friendList = conversation.getFrientList()
+        let friendList = ChatConversation.getFriendList()
         if friendList.getCount() <= 0 {
             var iq = XMPPIQ();
             var query = DDXMLElement.elementWithName("query") as DDXMLElement
             iq.addAttributeWithName("from", stringValue: "\(sender.myJID)")
-            iq.addAttributeWithName("id", stringValue: "friendlistrequest")
+            iq.addAttributeWithName("id", stringValue: "floginrosterrequest")
             iq.addAttributeWithName("type", stringValue: "get")
             
             query.addAttributeWithName("xmlns", stringValue: "jabber:iq:roster")
             
             iq.addChild(query)
             xmppStream.sendElement(iq)
+        }else{
+            self.chatDelegate(didLogin: true, isFirstInit: false, jid: "\(sender.myJID)", name: "\(sender.myJID)")
         }
         
-        // Test VCard
+        // Set VCard
 //        var iq = XMPPIQ()
-//        iq.addAttributeWithName("from", stringValue: "\(sender.myJID)")
-//        iq.addAttributeWithName("type", stringValue: "get")
-//        iq.addAttributeWithName("id", stringValue: "adit@vb.icbali.com")
-//        var vcard = DDXMLElement.elementWithName("vcard") as DDXMLElement
+//        var vcard = DDXMLElement.elementWithName("vCard") as DDXMLElement
+//        var fullname = DDXMLElement.elementWithName("FN") as DDXMLElement
+//        var email = DDXMLElement.elementWithName("EMAIL") as DDXMLElement
+//        var photo = DDXMLElement.elementWithName("PHOTO") as DDXMLElement
+//        var photo_file = DDXMLElement.elementWithName("EXTFILE") as DDXMLElement
+//        iq.addAttributeWithName("type", stringValue: "set")
+//        iq.addAttributeWithName("id", stringValue: "requestvcardchange")
 //        vcard.addAttributeWithName("xmlns", stringValue: "vcard-temp")
+//        
+//        fullname.setStringValue("Rai Gudakesa")
+//        email.setStringValue("raigudakesa@gmail.com")
+//        photo_file.setStringValue("https://www.google.com/images/srpr/logo11w.png")
+//        photo.addChild(photo_file)
+//        vcard.addChild(fullname)
+//        vcard.addChild(email)
+//        vcard.addChild(photo)
 //        iq.addChild(vcard)
 //        xmppStream.sendElement(iq)
         
@@ -180,9 +197,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
     }
     
     func xmppStream(sender: XMPPStream!, didReceiveMessage message: XMPPMessage!) {
-        let jid = splitJabberId("\(message.from())")["fullJID"]!
+        let jid = XmppUtility.splitJabberId("\(message.from())")["fullJID"]!
         let date = NSDate()
-        let conversation = ChatConversation()
         println("RECV : \(message)")
         for children in message.children()
         {
@@ -190,7 +206,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
             switch children.name
             {
             case "body":
-                conversation.SaveMessage(jid: jid,
+                ChatConversation.SaveMessage(jid: jid,
                     message: mesg.stringValue(),
                     date: date,
                     message_type: 1, message_status: 0)
@@ -207,7 +223,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
                     fileManager.createDirectoryAtPath(recvImagesDirectory, withIntermediateDirectories: false, attributes: nil, error: nil)
                 }
                 
-                conversation.SaveMessage(primary_id: primary_id,
+                ChatConversation.SaveMessage(primary_id: primary_id,
                     jid: jid,
                     message: "",
                     date: date,
@@ -218,7 +234,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
                 
                 // Download File
                  Alamofire.download(.GET, "http://\(thumb_url!)", { (temporaryURL:NSURL, response: NSHTTPURLResponse) -> (NSURL) in
-                    conversation.UpdateMessage(primary_id, message_status: 2, multimedia_msgthumblocal: "receive_images/\(response.suggestedFilename!)")
+                    ChatConversation.UpdateMessage(primary_id, message_status: 2, multimedia_msgthumblocal: "receive_images/\(response.suggestedFilename!)")
                     if let directoryURL = NSFileManager.defaultManager()
                         .URLsForDirectory(.DocumentDirectory,
                             inDomains: .UserDomainMask)[0]
@@ -233,7 +249,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
                 .responseJSON({ (temporaryURL, response, object, error) -> Void in
                     // =============================================================
                     let thumbnail_request = Alamofire.download(.GET, "http://\(mesg.stringValue())", { (temporaryURL:NSURL, response: NSHTTPURLResponse) -> (NSURL) in
-                        conversation.UpdateMessage(primary_id, message_status: 2, multimedia_msglocal: "receive_images/\(response.suggestedFilename!)")
+                        ChatConversation.UpdateMessage(primary_id, message_status: 2, multimedia_msglocal: "receive_images/\(response.suggestedFilename!)")
                         if let directoryURL = NSFileManager.defaultManager()
                             .URLsForDirectory(.DocumentDirectory,
                                 inDomains: .UserDomainMask)[0]
@@ -267,7 +283,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
                     fileManager.createDirectoryAtPath(recvImagesDirectory, withIntermediateDirectories: false, attributes: nil, error: nil)
                 }
                 
-                conversation.SaveMessage(primary_id: primary_id,
+                ChatConversation.SaveMessage(primary_id: primary_id,
                     jid: jid,
                     message: "",
                     date: date,
@@ -278,7 +294,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
                 
                 // Download File
                 Alamofire.download(.GET, "http://\(thumb_url!)", { (temporaryURL:NSURL, response: NSHTTPURLResponse) -> (NSURL) in
-                    conversation.UpdateMessage(primary_id, message_status: 2, multimedia_msgthumblocal: "receive_videos/\(response.suggestedFilename!)")
+                    ChatConversation.UpdateMessage(primary_id, message_status: 2, multimedia_msgthumblocal: "receive_videos/\(response.suggestedFilename!)")
                     if let directoryURL = NSFileManager.defaultManager()
                         .URLsForDirectory(.DocumentDirectory,
                             inDomains: .UserDomainMask)[0]
@@ -313,9 +329,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
     
     func xmppStream(sender: XMPPStream!, didSendMessage message: XMPPMessage!) {
         println("DIDSEND : \(message)")
-        let conversation = ChatConversation()
         let date = NSDate()
-        let jid = splitJabberId("\(message.to())")["fullJID"]!
+        let jid = XmppUtility.splitJabberId("\(message.to())")["fullJID"]!
         
         for children in message.children()
         {
@@ -326,7 +341,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
                 
                 if mesg != nil {
                     
-                    conversation.SaveMessage(jid: jid,
+                    ChatConversation.SaveMessage(jid: jid,
                         message: mesg.stringValue(),
                         date: date,
                         is_sender: true,
@@ -341,9 +356,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
                 let photo = message.elementForName(children.name);
                 if photo != nil {
                     let messageId = message.attributeStringValueForName("id")
-                    let conversation = ChatConversation()
 
-                    conversation.UpdateMessage(messageId, message_status: 2)
+                    ChatConversation.UpdateMessage(messageId, message_status: 2)
                     self.chatDelegate(1, target: jid, didMessageSend: mesg.stringValue(), date: date)
                 }
                 break
@@ -354,22 +368,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
         
     }
     
-    func splitJabberId(jid: String) -> [String:String]
-    {
-        var splitJid = split(jid) {$0 == "/"}
-        var splitAccount = split(splitJid[0]) {$0 == "@"}
-        var resource = ""
-        if splitJid.count > 1 {
-            resource = splitJid[1]
-        }
-        if splitAccount.count > 1 {
-            return ["fullJID": splitJid[0], "accountName":splitAccount[0], "hostname":splitAccount[splitAccount.count-1], "resource":resource]
-        }
-        return ["fullJID": splitJid[0], "accountName":splitAccount[0], "hostname":splitAccount[1], "resource":resource]
-    }
-    
     func xmppStream(sender: XMPPStream!, didReceivePresence presence: XMPPPresence!) {
-        //println("Receive Presence : \(presence)")
+        println("Receive Presence : \(presence)")
         
         if presence.attributeStringValueForName("type") != nil {
             switch presence.attributeStringValueForName("type") {
@@ -391,6 +391,76 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
     
     func xmppStream(sender: XMPPStream!, didReceiveIQ iq: XMPPIQ!) -> AnyObject! {
         println("IQ: \(iq)")
+        
+        switch iq.attributeStringValueForName("id")
+        {
+        case "floginrosterrequest":
+            ChatConversation.clearDataStore()
+            
+            for children in iq.children()
+            {
+                switch children.name
+                {
+                case "query":
+                    var flist = [FriendList]()
+                    for childrenlv2 in children.children()
+                    {
+                        switch childrenlv2.name
+                        {
+                        case "item":
+                            flist.append(FriendList(jid: childrenlv2.attributeStringValueForName("jid"),
+                                fullname: XmppUtility.splitJabberId(childrenlv2.attributeStringValueForName("jid"))["accountName"]!))
+                            break
+                        default:
+                            break
+                        }
+                    }
+                    ChatConversation.addFriendList(flist)
+                    self.chatDelegate(didLogin: true, isFirstInit: true, jid: "\(sender.myJID)", name: "\(sender.myJID)")
+                    break
+                default:
+                    break
+                }
+            }
+        case "requestvcard":
+            if iq.attributeStringValueForName("type") != "error" {
+                // Check if vCard FN Available
+                var fn = ""
+                var fa = ""
+                for children in iq.children()
+                {
+                    switch children.name
+                    {
+                    case "PHOTO":
+                        for childrenlv2 in children.children()
+                        {
+                            switch childrenlv2.name
+                            {
+                                case "BINVAL":
+                                    break
+                                case "EXTVAL":
+                                    break
+                                default:
+                                    break
+                            }
+                        }
+                        break
+                    case "FN":
+                        fn = children.stringValue
+                        break
+                    default:
+                        break
+                    }
+                }
+                var jid = XmppUtility.splitJabberId("\(iq.from())")["fullJID"]!
+                self.chatDelegate(jid, friendName: fn, friendAvatar: fa)
+            }
+            break;
+        default:
+            break;
+        }
+        
+        
         return nil
     }
     
@@ -423,11 +493,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
     func chatDelegate(didAlertReceived alertCode: Int){
         
     }
-    func chatDelegate(didBuddyListReceived buddylist: NSMutableArray) {
-        self.chatDelegate?.chatDelegate?(didBuddyListReceived: buddylist)
+    func chatDelegate(didBuddyListFinishedReceive message: String)
+    {
+        self.chatDelegate?.chatDelegate?(didBuddyListFinishedReceive: message)
     }
-    func chatDelegate(didLogin isLogin: Bool, jid: String, name: String) {
-        self.chatDelegate?.chatDelegate?(didLogin: isLogin, jid: jid, name: name)
+    func chatDelegate(ofCurrent: Int, didBuddyListProcessingReceive ofTotal: Int)
+    {
+        self.chatDelegate?.chatDelegate?(ofCurrent, didBuddyListProcessingReceive: ofTotal)
+    }
+    func chatDelegate(friendId: String, friendName: String, friendAvatar: String) {
+        self.chatDelegate?.chatDelegate?(friendId, friendName: friendName, friendAvatar: friendAvatar)
+    }
+    func chatDelegate(didLogin isLogin: Bool, isFirstInit: Bool, jid: String, name: String) {
+        self.chatDelegate?.chatDelegate?(didLogin: isLogin, isFirstInit: isFirstInit, jid: jid, name: name)
     }
     func chatDelegate(senderId: String, senderName: String, didReceiveChatState state: Int) {
         self.chatSingleDelegate?.chatDelegate?(senderId, senderName: senderName, didReceiveChatState: state)

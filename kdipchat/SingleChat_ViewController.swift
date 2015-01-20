@@ -54,8 +54,7 @@ class SingleChat_ViewController: JSQMessagesViewController, ChatDelegate, UIScro
     {
         //Load Messages From Data Store
         self.msg = NSMutableArray()
-        let conversation = ChatConversation()
-        self.tmpConversation = conversation.getConversationById(self.receiverId)
+        self.tmpConversation = ChatConversation.getConversationById(self.receiverId)
         var usedSenderId: String!
         var usedSenderDN: String!
         for c in tmpConversation
@@ -232,9 +231,8 @@ class SingleChat_ViewController: JSQMessagesViewController, ChatDelegate, UIScro
         let urlRequest = self.urlRequestWithComponents(nil, urlString: "http://vb.icbali.com/chat/index.php", fileData: file)
         
         // Save To Database
-        let conversation = ChatConversation()
         let primary_id = ChatList.generateDate(self.receiverId)
-        conversation.SaveMessage(primary_id: primary_id, jid: self.receiverId, message: "", date: NSDate(), is_sender: true, message_type: 2, message_status: 0, multimedia_msgurl: "", multimedia_msglocal: "send_images/\(cur_date)_\(filename)")
+        ChatConversation.SaveMessage(primary_id: primary_id, jid: self.receiverId, message: "", date: NSDate(), is_sender: true, message_type: 2, message_status: 0, multimedia_msgurl: "", multimedia_msglocal: "send_images/\(cur_date)_\(filename)")
         
         // Uploading Image First
         Alamofire.upload(urlRequest.0, urlRequest.1).responseJSON { (request, response, data, error) -> Void in
@@ -279,7 +277,7 @@ class SingleChat_ViewController: JSQMessagesViewController, ChatDelegate, UIScro
                             messg.addAttributeWithName("type", stringValue: "chat")
                             messg.addAttributeWithName("to", stringValue: "\(self.receiverId)@vb.icbali.com")
                             self.DelegateApp.xmppStream.sendElement(messg)
-                            conversation.UpdateMessage(primary_id, message_status: 1, multimedia_msgurl: remotePath!, multimedia_msgthumburl: remoteThumb!, multimedia_msgthumblocal: "send_images/\(response!.suggestedFilename!)")
+                            ChatConversation.UpdateMessage(primary_id, message_status: 1, multimedia_msgurl: remotePath!, multimedia_msgthumburl: remoteThumb!, multimedia_msgthumblocal: "send_images/\(response!.suggestedFilename!)")
                         }
                     })
                 }
@@ -315,9 +313,8 @@ class SingleChat_ViewController: JSQMessagesViewController, ChatDelegate, UIScro
         let urlRequest = self.urlRequestWithComponents(nil, urlString: "http://vb.icbali.com/chat/index.php", fileData: file)
         
         // Save To Database
-        let conversation = ChatConversation()
         let primary_id = ChatList.generateDate(self.receiverId)
-        conversation.SaveMessage(primary_id: primary_id, jid: self.receiverId, message: "", date: NSDate(), is_sender: true, message_type: 3, message_status: 0, multimedia_msgurl: "", multimedia_msglocal: "send_videos/\(cur_date)_\(filename)")
+        ChatConversation.SaveMessage(primary_id: primary_id, jid: self.receiverId, message: "", date: NSDate(), is_sender: true, message_type: 3, message_status: 0, multimedia_msgurl: "", multimedia_msglocal: "send_videos/\(cur_date)_\(filename)")
         
         
         // Uploading Image First
@@ -368,7 +365,7 @@ class SingleChat_ViewController: JSQMessagesViewController, ChatDelegate, UIScro
                             messg.addAttributeWithName("type", stringValue: "chat")
                             messg.addAttributeWithName("to", stringValue: "\(self.receiverId)@vb.icbali.com")
                             self.DelegateApp.xmppStream.sendElement(messg)
-                            conversation.UpdateMessage(primary_id, message_status: 1, multimedia_msgurl: remotePath!, multimedia_msgthumburl: remoteThumb!, multimedia_msgthumblocal: "send_videos/\(response!.suggestedFilename!)")
+                            ChatConversation.UpdateMessage(primary_id, message_status: 1, multimedia_msgurl: remotePath!, multimedia_msgthumburl: remoteThumb!, multimedia_msgthumblocal: "send_videos/\(response!.suggestedFilename!)")
                         }
                     })
                 }

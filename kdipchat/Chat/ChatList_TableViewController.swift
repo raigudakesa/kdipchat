@@ -25,8 +25,7 @@ class ChatList_TableViewController: UITableViewController, ChatDelegate {
     
     func loadChat()
     {
-        let conversation = ChatConversation()
-        self.chatList = conversation.getConversationList()
+        self.chatList = ChatConversation.getConversationList()
     }
     
     func chatDelegate(senderId: String, senderName: String, didMultimediaReceived data: String, date: NSDate) {
@@ -35,6 +34,11 @@ class ChatList_TableViewController: UITableViewController, ChatDelegate {
     }
     
     func chatDelegate(senderId: String, senderName: String, didMessageReceived message: String, date: NSDate) {
+        self.loadChat()
+        self.tableView.reloadData()
+    }
+    
+    func chatDelegate(type: Int, target: String, didMessageSend message: String, date: NSDate) {
         self.loadChat()
         self.tableView.reloadData()
     }
