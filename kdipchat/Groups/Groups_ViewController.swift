@@ -8,12 +8,10 @@
 
 import UIKit
 
-class Groups_ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ChatDelegate {
+class Groups_ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchDisplayDelegate, UISearchBarDelegate, ChatDelegate {
     var DelegateApp = UIApplication.sharedApplication().delegate as AppDelegate
     var groupList = [GroupList]()
     var selectedCell: NSIndexPath!
-    
-    @IBOutlet weak var btnTest: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +20,10 @@ class Groups_ViewController: UIViewController, UITableViewDataSource, UITableVie
         // Do any additional setup after loading the view.
     }
 
+    @IBAction func searchGroup(sender: UIBarButtonItem) {
+        
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -46,7 +48,7 @@ class Groups_ViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cellgroups", forIndexPath: indexPath) as Groups_TableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("cellgroups") as Groups_TableViewCell
         cell.groupName.text = self.groupList[indexPath.row].name
         return cell
     }

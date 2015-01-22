@@ -341,12 +341,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
             let roomjid = XmppUtility.splitJabberId("\(message.from())")["fullJID"]!
             let mesg = message.elementForName("body")
             let children = message.children()
-
-            ChatConversation.SaveMessage(jid: roomjid, group_id: jid,
-                message: mesg.stringValue(),
-                date: date,
-                message_type: 1, message_status: 0)
-            self.chatDelegate(roomjid, senderName: jid, didMessageReceived: mesg.stringValue(), date: date)
+            
+            if jid != self.getJabberName()
+            {
+                ChatConversation.SaveMessage(jid: roomjid, group_id: jid,
+                    message: mesg.stringValue(),
+                    date: date,
+                    message_type: 1, message_status: 0)
+                
+                self.chatDelegate(roomjid, senderName: jid, didMessageReceived: mesg.stringValue(), date: date)
+            }
             
             ChatConversation.UpdateGroups(roomjid)
             break

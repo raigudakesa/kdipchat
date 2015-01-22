@@ -55,6 +55,18 @@ class GroupChat_ViewController: JSQMessagesViewController, ChatDelegate, UIScrol
     // ================================================================================
     // View of Chat Controller
     // ================================================================================
+    override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
+        self.msg.addObject(JSQMessage(senderId: self.senderId, senderDisplayName: self.senderDisplayName, date: date, text: text))
+        self.finishSendingMessageAnimated(true)
+        
+        var messg = XMPPMessage()
+        messg.addBody(text)
+        messg.addAttributeWithName("from", stringValue: "\(self.senderId)")
+        messg.addAttributeWithName("type", stringValue: "groupchat")
+        messg.addAttributeWithName("to", stringValue: "\(self.groupId)")
+        self.DelegateApp.xmppStream.sendElement(messg)
+    }
+    
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
         //return self.messages[indexPath.item]
         return self.msg.objectAtIndex(indexPath.item) as JSQMessageData
