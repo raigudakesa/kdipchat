@@ -218,7 +218,7 @@
                     </connections>
                 </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="-614" y="-1064"/>
+            <point key="canvasLocation" x="-880" y="-935"/>
         </scene>
         <!--Main BarUI Tab Bar Controller-->
         <scene sceneID="mUg-7p-D8D">
@@ -233,8 +233,8 @@
                     </tabBar>
                     <connections>
                         <segue destination="rh3-ha-UF5" kind="relationship" relationship="viewControllers" id="ApU-nl-Bl5"/>
-                        <segue destination="ISI-El-NJw" kind="relationship" relationship="viewControllers" id="kBU-yl-JSh"/>
                         <segue destination="WXe-Qu-gwC" kind="relationship" relationship="viewControllers" id="dCl-NA-zia"/>
+                        <segue destination="7Be-cS-e3m" kind="relationship" relationship="viewControllers" id="kBk-Ek-nTE"/>
                         <segue destination="rRt-wL-26U" kind="relationship" relationship="viewControllers" id="baA-hf-1tS"/>
                     </connections>
                 </tabBarController>
@@ -259,7 +259,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-43" y="-603"/>
+            <point key="canvasLocation" x="-125" y="-935"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="BpB-dj-AUA">
@@ -299,24 +299,83 @@
             </objects>
             <point key="canvasLocation" x="-1611" y="-139"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="mJm-eB-ZAR">
+        <!--Groups-->
+        <scene sceneID="RLj-OW-mrX">
             <objects>
-                <viewController id="ISI-El-NJw" sceneMemberID="viewController">
+                <navigationController id="7Be-cS-e3m" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Groups" id="ObS-gC-4nn"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="OMA-Ce-Pwn">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="0Xk-Sb-yb0" kind="relationship" relationship="rootViewController" id="X9t-fy-QPO"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="a2H-Fs-Y2G" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1611" y="672"/>
+        </scene>
+        <!--Groups-->
+        <scene sceneID="tct-QV-gPa">
+            <objects>
+                <viewController id="0Xk-Sb-yb0" customClass="Groups_ViewController" customModule="kdipchat" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="avs-X4-8Ix"/>
-                        <viewControllerLayoutGuide type="bottom" id="Gcu-0g-tgM"/>
+                        <viewControllerLayoutGuide type="top" id="lNr-yl-67J"/>
+                        <viewControllerLayoutGuide type="bottom" id="0BG-ff-ta4"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="wHi-bU-tcN">
+                    <view key="view" contentMode="scaleToFill" id="DxZ-Np-k73">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="47" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="dTh-08-JvB">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="687"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cellgroups" rowHeight="47" id="Mu2-YC-aI8" customClass="Groups_TableViewCell" customModule="kdipchat" customModuleProvider="target">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Mu2-YC-aI8" id="XNv-Hz-Thd">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Room of Group Chat" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="43V-DM-NkN">
+                                                    <rect key="frame" x="10" y="12" width="396" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="centerY" secondItem="43V-DM-NkN" secondAttribute="centerY" id="9Bu-BG-GXH"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="43V-DM-NkN" secondAttribute="trailing" id="Jni-cx-CAg"/>
+                                                <constraint firstItem="43V-DM-NkN" firstAttribute="leading" secondItem="XNv-Hz-Thd" secondAttribute="leadingMargin" constant="2" id="yWz-uu-kSV"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="groupName" destination="43V-DM-NkN" id="BWh-0v-yOo"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="0Xk-Sb-yb0" id="9h1-H2-WbC"/>
+                                    <outlet property="delegate" destination="0Xk-Sb-yb0" id="Rau-0I-JoG"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="0BG-ff-ta4" firstAttribute="top" secondItem="dTh-08-JvB" secondAttribute="bottom" id="3XO-w8-TkP"/>
+                            <constraint firstItem="dTh-08-JvB" firstAttribute="leading" secondItem="DxZ-Np-k73" secondAttribute="leadingMargin" constant="-16" id="55s-fU-eW9"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="dTh-08-JvB" secondAttribute="trailing" constant="-16" id="Ivm-1S-qn6"/>
+                            <constraint firstItem="dTh-08-JvB" firstAttribute="top" secondItem="lNr-yl-67J" secondAttribute="bottom" constant="-64" id="Je2-vI-2xF"/>
+                        </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="" systemItem="favorites" id="RMW-61-mme"/>
+                    <navigationItem key="navigationItem" title="Groups" id="kGj-tF-HBc">
+                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="hHA-sV-Hrw"/>
+                    </navigationItem>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="nzx-Q2-OVF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dD3-YW-Fht" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1612.5" y="406.6901408450704"/>
+            <point key="canvasLocation" x="-880" y="675"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="TMN-uH-tpr">
@@ -424,11 +483,31 @@
                     </navigationItem>
                     <connections>
                         <segue destination="vXZ-lx-hvc" kind="show" identifier="showSingleChat" id="sTG-hC-k1E"/>
+                        <segue destination="Sv0-8O-oF5" kind="show" identifier="showGroupChat" id="SUR-Oh-6Et"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fMo-gj-r13" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-614" y="-271"/>
+            <point key="canvasLocation" x="-880" y="-139"/>
+        </scene>
+        <!--Group Chat View Controller-->
+        <scene sceneID="jNs-Sq-PeC">
+            <objects>
+                <viewController id="Sv0-8O-oF5" customClass="GroupChat_ViewController" customModule="kdipchat" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ncu-ns-0ZJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="WpH-Mp-2Gu"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ugf-Ya-dMW">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="eGO-o3-bEy"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tkb-cN-laT" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-125" y="-139"/>
         </scene>
     </scenes>
     <resources>

@@ -198,58 +198,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
     
     func xmppStream(sender: XMPPStream!, didReceiveMessage message: XMPPMessage!) {
         let jid = XmppUtility.splitJabberId("\(message.from())")["fullJID"]!
+        let type = message.attributeStringValueForName("type")?
         let date = NSDate()
         println("RECV : \(message)")
-        for children in message.children()
+        if type == nil { return }
+        
+        switch type!
         {
-            let mesg = message.elementForName(children.name)
-            switch children.name
+        case "chat":
+            for children in message.children()
             {
-            case "body":
-                ChatConversation.SaveMessage(jid: jid,
-                    message: mesg.stringValue(),
-                    date: date,
-                    message_type: 1, message_status: 0)
-                self.chatDelegate(jid, senderName: jid, didMessageReceived: mesg.stringValue(), date: date)
-                break
-            case "photo":
-                let primary_id = ChatList.generateDate(jid)
-                let thumb_url = mesg.attributeStringValueForName("thumb")
-                let documentsDirectory = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
-                let recvImagesDirectory = documentsDirectory[0].stringByAppendingPathComponent("receive_images")
-                let fileManager = NSFileManager()
-                var is_directory: ObjCBool = false
-                if !fileManager.fileExistsAtPath(recvImagesDirectory, isDirectory: &is_directory) && !is_directory {
-                    fileManager.createDirectoryAtPath(recvImagesDirectory, withIntermediateDirectories: false, attributes: nil, error: nil)
-                }
-                
-                ChatConversation.SaveMessage(primary_id: primary_id,
-                    jid: jid,
-                    message: "",
-                    date: date,
-                    message_type: 2,
-                    message_status: 0,
-                    multimedia_msgurl: mesg.stringValue(),
-                    multimedia_msgthumburl: thumb_url)
-                
-                // Download File
-                 Alamofire.download(.GET, "http://\(thumb_url!)", { (temporaryURL:NSURL, response: NSHTTPURLResponse) -> (NSURL) in
-                    ChatConversation.UpdateMessage(primary_id, message_status: 2, multimedia_msgthumblocal: "receive_images/\(response.suggestedFilename!)")
-                    if let directoryURL = NSFileManager.defaultManager()
-                        .URLsForDirectory(.DocumentDirectory,
-                            inDomains: .UserDomainMask)[0]
-                        as? NSURL {
-                            let pathComponent = response.suggestedFilename
-                            return directoryURL.URLByAppendingPathComponent("receive_images").URLByAppendingPathComponent(response.suggestedFilename!)
+                let mesg = message.elementForName(children.name)
+                switch children.name
+                {
+                case "body":
+                    ChatConversation.SaveMessage(jid: jid,
+                        message: mesg.stringValue(),
+                        date: date,
+                        message_type: 1, message_status: 0)
+                    self.chatDelegate(jid, senderName: jid, didMessageReceived: mesg.stringValue(), date: date)
+                    break
+                case "photo":
+                    let primary_id = ChatList.generateDate(jid)
+                    let thumb_url = mesg.attributeStringValueForName("thumb")
+                    let documentsDirectory = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
+                    let recvImagesDirectory = documentsDirectory[0].stringByAppendingPathComponent("receive_images")
+                    let fileManager = NSFileManager()
+                    var is_directory: ObjCBool = false
+                    if !fileManager.fileExistsAtPath(recvImagesDirectory, isDirectory: &is_directory) && !is_directory {
+                        fileManager.createDirectoryAtPath(recvImagesDirectory, withIntermediateDirectories: false, attributes: nil, error: nil)
                     }
                     
-                    return temporaryURL
+                    ChatConversation.SaveMessage(primary_id: primary_id,
+                        jid: jid,
+                        message: "",
+                        date: date,
+                        message_type: 2,
+                        message_status: 0,
+                        multimedia_msgurl: mesg.stringValue(),
+                        multimedia_msgthumburl: thumb_url)
                     
-                })
-                .responseJSON({ (temporaryURL, response, object, error) -> Void in
-                    // =============================================================
-                    let thumbnail_request = Alamofire.download(.GET, "http://\(mesg.stringValue())", { (temporaryURL:NSURL, response: NSHTTPURLResponse) -> (NSURL) in
-                        ChatConversation.UpdateMessage(primary_id, message_status: 2, multimedia_msglocal: "receive_images/\(response.suggestedFilename!)")
+                    // Download File
+                    Alamofire.download(.GET, "http://\(thumb_url!)", { (temporaryURL:NSURL, response: NSHTTPURLResponse) -> (NSURL) in
+                        ChatConversation.UpdateMessage(primary_id, message_status: 2, multimedia_msgthumblocal: "receive_images/\(response.suggestedFilename!)")
                         if let directoryURL = NSFileManager.defaultManager()
                             .URLsForDirectory(.DocumentDirectory,
                                 inDomains: .UserDomainMask)[0]
@@ -261,68 +252,108 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
                         return temporaryURL
                         
                     })
-                    .responseJSON({ (temporaryURL, response, object, error) -> Void in
-                            self.chatDelegate(jid, senderName: jid, didMultimediaReceived: mesg.stringValue(), date: date)
-                            
+                        .responseJSON({ (temporaryURL, response, object, error) -> Void in
+                            // =============================================================
+                            let thumbnail_request = Alamofire.download(.GET, "http://\(mesg.stringValue())", { (temporaryURL:NSURL, response: NSHTTPURLResponse) -> (NSURL) in
+                                ChatConversation.UpdateMessage(primary_id, message_status: 2, multimedia_msglocal: "receive_images/\(response.suggestedFilename!)")
+                                if let directoryURL = NSFileManager.defaultManager()
+                                    .URLsForDirectory(.DocumentDirectory,
+                                        inDomains: .UserDomainMask)[0]
+                                    as? NSURL {
+                                        let pathComponent = response.suggestedFilename
+                                        return directoryURL.URLByAppendingPathComponent("receive_images").URLByAppendingPathComponent(response.suggestedFilename!)
+                                }
+                                
+                                return temporaryURL
+                                
+                            })
+                                .responseJSON({ (temporaryURL, response, object, error) -> Void in
+                                    self.chatDelegate(jid, senderName: jid, didMultimediaReceived: mesg.stringValue(), date: date)
+                                    
+                                })
+                                .progress { (increment, current, total) -> Void in
+                                    println("\(current)/\(total)")
+                            }
+                            // =============================================================
+                        })
+                    
+                    break
+                case "video":
+                    let primary_id = ChatList.generateDate(jid)
+                    let thumb_url = mesg.attributeStringValueForName("thumb")
+                    let documentsDirectory = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
+                    let recvImagesDirectory = documentsDirectory[0].stringByAppendingPathComponent("receive_videos")
+                    let fileManager = NSFileManager()
+                    var is_directory: ObjCBool = false
+                    if !fileManager.fileExistsAtPath(recvImagesDirectory, isDirectory: &is_directory) && !is_directory {
+                        fileManager.createDirectoryAtPath(recvImagesDirectory, withIntermediateDirectories: false, attributes: nil, error: nil)
+                    }
+                    
+                    ChatConversation.SaveMessage(primary_id: primary_id,
+                        jid: jid,
+                        message: "",
+                        date: date,
+                        message_type: 3,
+                        message_status: 0,
+                        multimedia_msgurl: mesg.stringValue(),
+                        multimedia_msgthumburl: thumb_url)
+                    
+                    // Download File
+                    Alamofire.download(.GET, "http://\(thumb_url!)", { (temporaryURL:NSURL, response: NSHTTPURLResponse) -> (NSURL) in
+                        ChatConversation.UpdateMessage(primary_id, message_status: 2, multimedia_msgthumblocal: "receive_videos/\(response.suggestedFilename!)")
+                        if let directoryURL = NSFileManager.defaultManager()
+                            .URLsForDirectory(.DocumentDirectory,
+                                inDomains: .UserDomainMask)[0]
+                            as? NSURL {
+                                let pathComponent = response.suggestedFilename
+                                return directoryURL.URLByAppendingPathComponent("receive_videos").URLByAppendingPathComponent(response.suggestedFilename!)
+                        }
+                        
+                        return temporaryURL
+                        
                     })
-                    .progress { (increment, current, total) -> Void in
-                            println("\(current)/\(total)")
-                    }
-                    // =============================================================
-                })
-                
-                break
-            case "video":
-                let primary_id = ChatList.generateDate(jid)
-                let thumb_url = mesg.attributeStringValueForName("thumb")
-                let documentsDirectory = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
-                let recvImagesDirectory = documentsDirectory[0].stringByAppendingPathComponent("receive_videos")
-                let fileManager = NSFileManager()
-                var is_directory: ObjCBool = false
-                if !fileManager.fileExistsAtPath(recvImagesDirectory, isDirectory: &is_directory) && !is_directory {
-                    fileManager.createDirectoryAtPath(recvImagesDirectory, withIntermediateDirectories: false, attributes: nil, error: nil)
+                        .responseJSON({ (temporaryURL, response, object, error) -> Void in
+                            self.chatDelegate(jid, senderName: jid, didMultimediaReceived: mesg.stringValue(), date: date)
+                        })
+                    break
+                case "composing":
+                    self.chatDelegate(jid, senderName: jid, didReceiveChatState: 2)
+                    break
+                case "paused":
+                    self.chatDelegate(jid, senderName: jid, didReceiveChatState: 1)
+                    break
+                case "active":
+                    self.chatDelegate(jid, senderName: jid, didReceiveChatState: 0)
+                    break
+                default:
+                    break
                 }
-                
-                ChatConversation.SaveMessage(primary_id: primary_id,
-                    jid: jid,
-                    message: "",
-                    date: date,
-                    message_type: 3,
-                    message_status: 0,
-                    multimedia_msgurl: mesg.stringValue(),
-                    multimedia_msgthumburl: thumb_url)
-                
-                // Download File
-                Alamofire.download(.GET, "http://\(thumb_url!)", { (temporaryURL:NSURL, response: NSHTTPURLResponse) -> (NSURL) in
-                    ChatConversation.UpdateMessage(primary_id, message_status: 2, multimedia_msgthumblocal: "receive_videos/\(response.suggestedFilename!)")
-                    if let directoryURL = NSFileManager.defaultManager()
-                        .URLsForDirectory(.DocumentDirectory,
-                            inDomains: .UserDomainMask)[0]
-                        as? NSURL {
-                            let pathComponent = response.suggestedFilename
-                            return directoryURL.URLByAppendingPathComponent("receive_videos").URLByAppendingPathComponent(response.suggestedFilename!)
-                    }
-                    
-                    return temporaryURL
-                    
-                })
-                .responseJSON({ (temporaryURL, response, object, error) -> Void in
-                    self.chatDelegate(jid, senderName: jid, didMultimediaReceived: mesg.stringValue(), date: date)
-                })
-                break
-            case "composing":
-                self.chatDelegate(jid, senderName: jid, didReceiveChatState: 2)
-                break
-            case "paused":
-                self.chatDelegate(jid, senderName: jid, didReceiveChatState: 1)
-                break
-            case "active":
-                self.chatDelegate(jid, senderName: jid, didReceiveChatState: 0)
-                break
-            default:
-                break
             }
+            break
+        case "groupchat":
+            //    <message xmlns="jabber:client" type="groupchat" id="purpleb6966bee" to="raigudakesa@vb.icbali.com/kdip" from="room1@conference.vb.icbali.com/admin">
+            //         <body>tes</body>
+            //         <delay xmlns="urn:xmpp:delay" stamp="2015-01-21T07:14:23.306Z" from="admin@vb.icbali.com/iuvencas-iMac"/>
+            //         <x xmlns="jabber:x:delay" stamp="20150121T07:14:23" from="admin@vb.icbali.com/iuvencas-iMac"/>
+            //    </message>
+            let id = message.attributeStringValueForName("id")
+            let jid = XmppUtility.splitJabberId("\(message.from())")["resource"]!
+            let roomjid = XmppUtility.splitJabberId("\(message.from())")["fullJID"]!
+            let mesg = message.elementForName("body")
+            let children = message.children()
+
+            ChatConversation.SaveMessage(jid: roomjid, group_id: jid,
+                message: mesg.stringValue(),
+                date: date,
+                message_type: 1, message_status: 0)
+            self.chatDelegate(roomjid, senderName: jid, didMessageReceived: mesg.stringValue(), date: date)
+            
+            ChatConversation.UpdateGroups(roomjid)
+            break
+        default:
+            break
         }
+        
 
         
     }
@@ -382,7 +413,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
     }
     
     func xmppStream(sender: XMPPStream!, didSendPresence presence: XMPPPresence!) {
-        //println("Sended Presence : \(presence)")
+        println("Sended Presence : \(presence)")
     }
     
     func xmppRoster(sender: XMPPRoster!, didReceiveRosterItem item: DDXMLElement!) {
@@ -391,8 +422,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
     
     func xmppStream(sender: XMPPStream!, didReceiveIQ iq: XMPPIQ!) -> AnyObject! {
         println("IQ: \(iq)")
+        let id = iq.attributeStringValueForName("id")?
+        if id == nil { return nil }
         
-        switch iq.attributeStringValueForName("id")
+        switch id!
         {
         case "floginrosterrequest":
             ChatConversation.clearDataStore()
@@ -431,27 +464,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
                 {
                     switch children.name
                     {
-                    case "PHOTO":
-                        for childrenlv2 in children.children()
+                    case "vCard":
+                        for childrenlv1 in children.children()
                         {
-                            switch childrenlv2.name
+                            println(childrenlv1.name)
+                            switch childrenlv1.name
                             {
-                                case "BINVAL":
-                                    break
-                                case "EXTVAL":
-                                    break
-                                default:
-                                    break
+                            case "PHOTO":
+                                for childrenlv2 in childrenlv1.children()
+                                {
+                                    switch childrenlv2.name
+                                    {
+                                    case "BINVAL":
+                                        break
+                                    case "EXTVAL":
+                                        break
+                                    default:
+                                        break
+                                    }
+                                }
+                                break
+                            case "FN":
+                                fn = childrenlv1.stringValue
+                                break
+                            default:
+                                break
                             }
                         }
-                        break
-                    case "FN":
-                        fn = children.stringValue
                         break
                     default:
                         break
                     }
                 }
+                
                 var jid = XmppUtility.splitJabberId("\(iq.from())")["fullJID"]!
                 self.chatDelegate(jid, friendName: fn, friendAvatar: fa)
             }

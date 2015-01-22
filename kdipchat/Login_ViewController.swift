@@ -25,6 +25,7 @@ class Login_ViewController: UIViewController, ChatDelegate {
         super.viewDidLoad()
         DelegateApp.chatDelegate = self
         
+        // Test Date Difference
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -48,6 +49,7 @@ class Login_ViewController: UIViewController, ChatDelegate {
                 var iq = XMPPIQ()
                 var vcard = DDXMLElement.elementWithName("vCard") as DDXMLElement
                 if fList.count <= 0 {
+                    XmppUtility.joinAllAvailableGroup()
                     self.performSegueWithIdentifier("showMainTab", sender: self)
                     return
                 }
@@ -72,6 +74,7 @@ class Login_ViewController: UIViewController, ChatDelegate {
             }else{
                 if !isLoad {
                     isLoad = true
+                    XmppUtility.joinAllAvailableGroup()
                     self.performSegueWithIdentifier("showMainTab", sender: self)
                 }
             }
@@ -85,6 +88,7 @@ class Login_ViewController: UIViewController, ChatDelegate {
         self.progressBar.setProgress((self.progressCount/self.progressTotal), animated: false)
         ChatConversation.UpdateFriend(friendId, fullname: friendName, avatar: friendAvatar)
         if self.progressCount >= self.progressTotal {
+            XmppUtility.joinAllAvailableGroup()
             self.performSegueWithIdentifier("showMainTab", sender: self)
         }
     }

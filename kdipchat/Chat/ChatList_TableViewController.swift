@@ -66,7 +66,12 @@ class ChatList_TableViewController: UITableViewController, ChatDelegate {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         self.selectedCell = indexPath
-        performSegueWithIdentifier("showSingleChat", sender: self)
+        if self.chatList[indexPath.row].group_id != "-1" {
+            performSegueWithIdentifier("showGroupChat", sender: self)
+        }else{
+            performSegueWithIdentifier("showSingleChat", sender: self)
+        }
+        
     }
     
     
@@ -111,6 +116,15 @@ class ChatList_TableViewController: UITableViewController, ChatDelegate {
             controller.senderId = DelegateApp.getJabberID()
             controller.senderDisplayName = DelegateApp.getJabberID()
             controller.navigationItem.title = chatList[self.selectedCell.row].name
+            controller.hidesBottomBarWhenPushed = true
+            break
+        case "showGroupChat":
+            let controller = segue.destinationViewController as GroupChat_ViewController
+            controller.groupDisplayName = XmppUtility.splitJabberId(chatList[self.selectedCell.row].jid)["accountName"]!
+            controller.groupId = chatList[self.selectedCell.row].jid
+            controller.senderId = DelegateApp.getJabberID()
+            controller.senderDisplayName = DelegateApp.getJabberName()
+            controller.navigationItem.title = XmppUtility.splitJabberId(chatList[self.selectedCell.row].jid)["accountName"]!
             controller.hidesBottomBarWhenPushed = true
             break
         default:

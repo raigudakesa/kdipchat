@@ -10,6 +10,14 @@ import Foundation
 
 class ChatConversation {
     
+    class func clearDataStore()
+    {
+        DataStore.Shared.database!.open()
+        var resultset = DataStore.Shared.database?.executeUpdate("DELETE FROM friend_list", withArgumentsInArray: nil)
+        DataStore.Shared.database?.close()
+    }
+    
+    // Friends =================================================
     class func getFriendList() -> FriendListResult
     {
         DataStore.Shared.database!.open()
@@ -42,13 +50,6 @@ class ChatConversation {
         DataStore.Shared.database?.close()
     }
     
-    class func clearDataStore()
-    {
-        DataStore.Shared.database!.open()
-        var resultset = DataStore.Shared.database?.executeUpdate("DELETE FROM friend_list", withArgumentsInArray: nil)
-        DataStore.Shared.database?.close()
-    }
-    
     class func addFriendList(friendList: [FriendList])
     {
         if friendList.count <= 0 { return }
@@ -65,6 +66,63 @@ class ChatConversation {
         DataStore.Shared.database?.executeStatements(sql)
         DataStore.Shared.database?.close()
     }
+    // ========================================================================================
+    
+    // GROUPS
+    class func getGroupList() -> [GroupList]
+    {
+        DataStore.Shared.database!.open()
+        var resultset = DataStore.Shared.database?.executeQuery("SELECT * FROM group_list ORDER BY group_name ASC", withArgumentsInArray: nil)
+        var gl = [GroupList]()
+        var gname = ""
+        while resultset!.next()
+        {
+            gl.append(GroupList(group_id: resultset!.stringForColumn("group_id"),
+                group_name: resultset!.stringForColumn("group_name"),
+                total_user: resultset!.longForColumn("total_user"),
+                is_admin: resultset!.longForColumn("is_admin"),
+                last_history_request: DTLibs.convertStringToDate("yyyy-MM-dd HH:mm:ss", date: resultset!.stringForColumn("last_history_request"))))
+            
+        }
+        DataStore.Shared.database?.close()
+        
+        return gl
+    }
+    
+    class func UpdateGroups(group_id: String, group_name: String = "", total_user: Int = -1, is_admin: Int = -1, last_history_request: NSDate? = NSDate())
+    {
+        DataStore.Shared.database!.open()
+        var lhr = "";
+        var set = (group_name == "") ? "" : ", group_name = '\(group_name)'"
+        if last_history_request != nil {
+            lhr = DTLibs.convertStringFromDate("yyyy-MM-dd HH:mm:ss", date: last_history_request!)
+        }
+        set = set + ((total_user == -1) ? "" : ", total_user = '\(total_user)'")
+        set = set + ((is_admin == -1) ? "" : ", is_admin = '\(is_admin)'")
+        set = set + ((last_history_request == nil) ? "" : ", last_history_request = '\(lhr)'")
+        if set != "" { set = set.substringFromIndex(advance(set.startIndex, 1)) }
+        var resultset = DataStore.Shared.database?.executeUpdate("UPDATE group_list SET \(set) WHERE group_id=?", withArgumentsInArray: [group_id])
+        DataStore.Shared.database?.close()
+    }
+    
+    class func addGroups(groupList: [GroupList])
+    {
+        if groupList.count <= 0 { return }
+        
+        DataStore.Shared.database!.open()
+        var template = "INSERT INTO group_list VALUES "
+        var sql = ""
+        var strDate = ""
+        for gl in groupList
+        {
+            strDate = DTLibs.convertStringFromDate("yyyy-MM-dd HH:mm:ss", date: gl.last_history_request)
+            sql = sql + template + "('\(gl.group_id)','\(gl.name)','\(gl.total_user)','\(gl.is_admin)','\(strDate)'); "
+        }
+        DataStore.Shared.database?.executeStatements(sql)
+        DataStore.Shared.database?.close()
+    }
+    
+    // ========================================================================================
     
     class func getConversationList() -> [ConversationData]
     {
@@ -73,12 +131,17 @@ class ChatConversation {
         var resultset = DataStore.Shared.database?.executeQuery("SELECT chat_conversation.*,friend_list.fullname FROM chat_conversation LEFT JOIN friend_list ON friend_list.jid = chat_conversation.jid GROUP BY jid ORDER BY date DESC", withArgumentsInArray: nil)
         var jname = ""
         while resultset!.next() {
-             println(resultset!.stringForColumn("fullname"))
-            if resultset!.stringForColumn("fullname")? != nil && resultset!.stringForColumn("fullname") != "" {
-                jname = resultset!.stringForColumn("fullname")
-            }else{
+            if resultset!.stringForColumn("group_id") != "-1"
+            {
                 jname = XmppUtility.splitJabberId(resultset!.stringForColumn("jid"))["accountName"]!
+            }else{
+                if resultset!.stringForColumn("fullname")? != nil && resultset!.stringForColumn("fullname") != "" {
+                    jname = resultset!.stringForColumn("fullname")
+                }else{
+                    jname = XmppUtility.splitJabberId(resultset!.stringForColumn("jid"))["accountName"]!
+                }
             }
+            
             chatList.append(ConversationData(jid: resultset!.stringForColumn("jid"),
                 name: jname,
                 group_id: resultset!.stringForColumn("group_id"),
@@ -102,7 +165,7 @@ class ChatConversation {
     {
         var conversation = [ConversationData]()
         DataStore.Shared.database!.open()
-        var resultset = DataStore.Shared.database?.executeQuery("SELECT a.*,b.fullname FROM chat_conversation AS a LEFT JOIN friend_list AS b ON b.jid = a.jid WHERE a.jid=? AND a.group_id=? ORDER BY a.date ASC", withArgumentsInArray: [jid, group_id])
+        var resultset = DataStore.Shared.database?.executeQuery("SELECT a.*,b.fullname FROM chat_conversation AS a LEFT JOIN friend_list AS b ON b.jid = a.jid WHERE a.jid=? ORDER BY a.date ASC", withArgumentsInArray: [jid, group_id])
         var jname = ""
         
         while resultset!.next() {

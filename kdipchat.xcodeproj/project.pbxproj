@@ -165,6 +165,8 @@
 		311650E31A42CF5D0027F563 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 311650E21A42CF5D0027F563 /* CoreData.framework */; };
 		311650EA1A42D2E70027F563 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 311650E81A42D16C0027F563 /* libxml2.dylib */; };
 		311650EB1A42D2EE0027F563 /* libresolv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 311650E41A42CF680027F563 /* libresolv.dylib */; };
+		311E695B1A6F592A00688F93 /* Groups_ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311E695A1A6F592A00688F93 /* Groups_ViewController.swift */; };
+		311E695D1A6F6F9400688F93 /* kdip.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 311E695C1A6F6F9400688F93 /* kdip.sqlite */; };
 		312066F61A480878008F518C /* ChatList_TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312066F51A480878008F518C /* ChatList_TableViewController.swift */; };
 		312066FA1A480B62008F518C /* MainBar_UITabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312066F91A480B62008F518C /* MainBar_UITabBarController.swift */; };
 		312066FC1A481400008F518C /* ChatList_TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312066FB1A481400008F518C /* ChatList_TableViewCell.swift */; };
@@ -223,9 +225,11 @@
 		3130847E1A47B6A300DC25DC /* JSQSystemSoundPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3130847D1A47B6A300DC25DC /* JSQSystemSoundPlayer.m */; };
 		313540AE1A6E01E0009E828B /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 313540AD1A6E01E0009E828B /* DataStore.swift */; };
 		313540B11A6E1073009E828B /* XmppUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 313540B01A6E1073009E828B /* XmppUtility.swift */; };
-		313540B31A6E3D42009E828B /* kdip.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 313540B21A6E3D42009E828B /* kdip.sqlite */; };
 		3137C2B41A56819000BC03DD /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3137C2B11A56817800BC03DD /* Alamofire.framework */; };
 		3137C2B51A56819000BC03DD /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3137C2B11A56817800BC03DD /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		315232191A7086880018C0BE /* GroupList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315232181A7086880018C0BE /* GroupList.swift */; };
+		3152321C1A708B350018C0BE /* Groups_TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3152321B1A708B350018C0BE /* Groups_TableViewCell.swift */; };
+		3152321E1A70A2A40018C0BE /* GroupChat_ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3152321D1A70A2A40018C0BE /* GroupChat_ViewController.swift */; };
 		31593FD11A5B83F80029EF21 /* ConversationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31593FD01A5B83F80029EF21 /* ConversationData.swift */; };
 		319BA85D1A4905E9009E2E31 /* XMPPSIFileTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = 319BA85C1A4905E9009E2E31 /* XMPPSIFileTransfer.m */; };
 		31A575411A49610700979C3A /* ChatList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A575401A49610700979C3A /* ChatList.swift */; };
@@ -611,6 +615,8 @@
 		311650E41A42CF680027F563 /* libresolv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libresolv.dylib; path = usr/lib/libresolv.dylib; sourceTree = SDKROOT; };
 		311650E81A42D16C0027F563 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		311650EC1A42D33F0027F563 /* XMPPFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XMPPFramework.h; sourceTree = "<group>"; };
+		311E695A1A6F592A00688F93 /* Groups_ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Groups_ViewController.swift; path = kdipchat/Groups/Groups_ViewController.swift; sourceTree = SOURCE_ROOT; };
+		311E695C1A6F6F9400688F93 /* kdip.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; name = kdip.sqlite; path = ../../../kdip.sqlite; sourceTree = "<group>"; };
 		312066F51A480878008F518C /* ChatList_TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatList_TableViewController.swift; sourceTree = "<group>"; };
 		312066F91A480B62008F518C /* MainBar_UITabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainBar_UITabBarController.swift; sourceTree = "<group>"; };
 		312066FB1A481400008F518C /* ChatList_TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatList_TableViewCell.swift; sourceTree = "<group>"; };
@@ -732,15 +738,17 @@
 		3130847D1A47B6A300DC25DC /* JSQSystemSoundPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSQSystemSoundPlayer.m; path = Classes/JSQSystemSoundPlayer.m; sourceTree = "<group>"; };
 		313540AD1A6E01E0009E828B /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		313540B01A6E1073009E828B /* XmppUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XmppUtility.swift; sourceTree = "<group>"; };
-		313540B21A6E3D42009E828B /* kdip.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; name = kdip.sqlite; path = ../../../kdip.sqlite; sourceTree = "<group>"; };
 		3137C2AB1A56817800BC03DD /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
+		315232181A7086880018C0BE /* GroupList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupList.swift; sourceTree = "<group>"; };
+		3152321B1A708B350018C0BE /* Groups_TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Groups_TableViewCell.swift; path = kdipchat/Groups/Groups_TableViewCell.swift; sourceTree = SOURCE_ROOT; };
+		3152321D1A70A2A40018C0BE /* GroupChat_ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupChat_ViewController.swift; sourceTree = "<group>"; };
 		31593FD01A5B83F80029EF21 /* ConversationData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConversationData.swift; path = ../ConversationData.swift; sourceTree = "<group>"; };
 		319BA85B1A4905E9009E2E31 /* XMPPSIFileTransfer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPSIFileTransfer.h; sourceTree = "<group>"; };
 		319BA85C1A4905E9009E2E31 /* XMPPSIFileTransfer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPSIFileTransfer.m; sourceTree = "<group>"; };
 		31A575401A49610700979C3A /* ChatList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatList.swift; path = ../ChatList.swift; sourceTree = "<group>"; };
 		31AF4CB61A6CF12D0018D0D2 /* FriendList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendList.swift; sourceTree = "<group>"; };
-		31AF4CBA1A6D006C0018D0D2 /* FriendList_TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendList_TableViewCell.swift; path = Friends/FriendList_TableViewCell.swift; sourceTree = "<group>"; };
-		31AF4CBC1A6D04260018D0D2 /* FriendList_ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendList_ViewController.swift; path = Friends/FriendList_ViewController.swift; sourceTree = "<group>"; };
+		31AF4CBA1A6D006C0018D0D2 /* FriendList_TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendList_TableViewCell.swift; path = kdipchat/Friends/FriendList_TableViewCell.swift; sourceTree = SOURCE_ROOT; };
+		31AF4CBC1A6D04260018D0D2 /* FriendList_ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendList_ViewController.swift; path = kdipchat/Friends/FriendList_ViewController.swift; sourceTree = SOURCE_ROOT; };
 		31B919331A47D5F2006A934F /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		31B919341A47E7AB006A934F /* Login_ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Login_ViewController.swift; sourceTree = "<group>"; };
 		31B919371A47EBBB006A934F /* ChatDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatDelegate.swift; path = kdipchat/Delegate/ChatDelegate.swift; sourceTree = SOURCE_ROOT; };
@@ -807,6 +815,7 @@
 				C97CC8191A490D74006AEC74 /* Timeline */,
 				31BE9DDD1A47FCA200BA00FA /* Chat */,
 				31BE9DDC1A47FC9B00BA00FA /* Friends */,
+				311E69581A6F590000688F93 /* Groups */,
 				31B919361A47EB91006A934F /* Delegate */,
 				311650D11A42C8400027F563 /* kdip-Bridging-Header.h */,
 				31164AA61A42BC720027F563 /* AppDelegate.swift */,
@@ -1742,6 +1751,15 @@
 			path = libidn;
 			sourceTree = "<group>";
 		};
+		311E69581A6F590000688F93 /* Groups */ = {
+			isa = PBXGroup;
+			children = (
+				311E695A1A6F592A00688F93 /* Groups_ViewController.swift */,
+				3152321B1A708B350018C0BE /* Groups_TableViewCell.swift */,
+			);
+			name = Groups;
+			sourceTree = "<group>";
+		};
 		312204291A5A56910071709F /* fmdb */ = {
 			isa = PBXGroup;
 			children = (
@@ -1763,12 +1781,13 @@
 		3122043C1A5A6C6B0071709F /* DataModel */ = {
 			isa = PBXGroup;
 			children = (
-				313540B21A6E3D42009E828B /* kdip.sqlite */,
+				311E695C1A6F6F9400688F93 /* kdip.sqlite */,
 				3122043F1A5A6CCB0071709F /* ChatConversation.swift */,
 				31A575401A49610700979C3A /* ChatList.swift */,
 				31593FD01A5B83F80029EF21 /* ConversationData.swift */,
 				31AF4CB61A6CF12D0018D0D2 /* FriendList.swift */,
 				313540AD1A6E01E0009E828B /* DataStore.swift */,
+				315232181A7086880018C0BE /* GroupList.swift */,
 			);
 			name = DataModel;
 			path = kdipchat/Chat/DataModel;
@@ -1981,6 +2000,7 @@
 				3122043C1A5A6C6B0071709F /* DataModel */,
 				31164AA81A42BC720027F563 /* SingleChat_ViewController.swift */,
 				31162FC61A5E2D5300A13C34 /* SingleChat_CollectionViewCell.swift */,
+				3152321D1A70A2A40018C0BE /* GroupChat_ViewController.swift */,
 				312066F51A480878008F518C /* ChatList_TableViewController.swift */,
 				312066FB1A481400008F518C /* ChatList_TableViewCell.swift */,
 			);
@@ -2134,7 +2154,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				313540B31A6E3D42009E828B /* kdip.sqlite in Resources */,
+				311E695D1A6F6F9400688F93 /* kdip.sqlite in Resources */,
 				311650CA1A42C4510027F563 /* build-libidn.sh in Resources */,
 				31164AAC1A42BC720027F563 /* Main.storyboard in Resources */,
 				31164AB11A42BC720027F563 /* LaunchScreen.xib in Resources */,
@@ -2179,6 +2199,7 @@
 				311650B41A42C4510027F563 /* NSXMLElement+XEP_0335.m in Sources */,
 				31AF4CB71A6CF12D0018D0D2 /* FriendList.swift in Sources */,
 				311650941A42C4510027F563 /* XMPPCapabilities.xcdatamodel in Sources */,
+				311E695B1A6F592A00688F93 /* Groups_ViewController.swift in Sources */,
 				3130840D1A47B61D00DC25DC /* JSQMessagesCollectionViewCellIncoming.m in Sources */,
 				312066FC1A481400008F518C /* ChatList_TableViewCell.swift in Sources */,
 				3116504C1A42C4510027F563 /* XMPPIQ.m in Sources */,
@@ -2206,6 +2227,7 @@
 				31164AA91A42BC720027F563 /* SingleChat_ViewController.swift in Sources */,
 				311650661A42C4510027F563 /* XMPPIQ+JabberRPCResonse.m in Sources */,
 				311650981A42C4510027F563 /* XMPPCapabilities.m in Sources */,
+				3152321E1A70A2A40018C0BE /* GroupChat_ViewController.swift in Sources */,
 				312204351A5A56910071709F /* FMDatabase.m in Sources */,
 				311650AF1A42C4510027F563 /* XMPPMessage+XEP_0280.m in Sources */,
 				311650861A42C4510027F563 /* NSXMLElement+XEP_0059.m in Sources */,
@@ -2255,6 +2277,7 @@
 				311650C01A42C4510027F563 /* DDLog.m in Sources */,
 				312204391A5A56910071709F /* FMResultSet.m in Sources */,
 				3116504F1A42C4510027F563 /* XMPPModule.m in Sources */,
+				315232191A7086880018C0BE /* GroupList.swift in Sources */,
 				311650781A42C4510027F563 /* XMPPRoom.m in Sources */,
 				311650721A42C4510027F563 /* XMPPRoomOccupantHybridMemoryStorageObject.m in Sources */,
 				312066F61A480878008F518C /* ChatList_TableViewController.swift in Sources */,
@@ -2290,6 +2313,7 @@
 				311650BD1A42C4510027F563 /* DDAbstractDatabaseLogger.m in Sources */,
 				3116508E1A42C4510027F563 /* NSDate+XMPPDateTimeProfiles.m in Sources */,
 				312204361A5A56910071709F /* FMDatabaseAdditions.m in Sources */,
+				3152321C1A708B350018C0BE /* Groups_TableViewCell.swift in Sources */,
 				311650901A42C4510027F563 /* XMPPMessage+XEP_0085.m in Sources */,
 				313084041A47B61D00DC25DC /* JSQMediaItem.m in Sources */,
 				311650AD1A42C4510027F563 /* XMPPAttentionModule.m in Sources */,
