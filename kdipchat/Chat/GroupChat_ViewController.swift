@@ -63,6 +63,7 @@ class GroupChat_ViewController: JSQMessagesViewController, ChatDelegate, UIScrol
         messg.addBody(text)
         messg.addAttributeWithName("from", stringValue: "\(self.senderId)")
         messg.addAttributeWithName("type", stringValue: "groupchat")
+        messg.addAttributeWithName("id", stringValue: "sendgroupmessage")
         messg.addAttributeWithName("to", stringValue: "\(self.groupId)")
         self.DelegateApp.xmppStream.sendElement(messg)
     }
@@ -107,7 +108,7 @@ class GroupChat_ViewController: JSQMessagesViewController, ChatDelegate, UIScrol
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
         let message = msg.objectAtIndex(indexPath.item) as JSQMessage
         if indexPath.item < self.tmpConversation.count {
-            if !self.tmpConversation[indexPath.item].is_sender{
+            if !self.tmpConversation[indexPath.item].is_sender {
                 return NSAttributedString(string: message.senderDisplayName)
             }
         }

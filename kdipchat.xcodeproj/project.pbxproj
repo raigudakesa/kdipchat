@@ -170,6 +170,8 @@
 		312066F61A480878008F518C /* ChatList_TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312066F51A480878008F518C /* ChatList_TableViewController.swift */; };
 		312066FA1A480B62008F518C /* MainBar_UITabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312066F91A480B62008F518C /* MainBar_UITabBarController.swift */; };
 		312066FC1A481400008F518C /* ChatList_TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312066FB1A481400008F518C /* ChatList_TableViewCell.swift */; };
+		3120E99E1A7202BF0003D12C /* CreateGroup_ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120E99D1A7202BF0003D12C /* CreateGroup_ViewController.swift */; };
+		3120E9A21A724E330003D12C /* More_TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120E9A11A724E330003D12C /* More_TableViewController.swift */; };
 		312204351A5A56910071709F /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 3122042B1A5A56910071709F /* FMDatabase.m */; };
 		312204361A5A56910071709F /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3122042D1A5A56910071709F /* FMDatabaseAdditions.m */; };
 		312204371A5A56910071709F /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3122042F1A5A56910071709F /* FMDatabasePool.m */; };
@@ -620,6 +622,8 @@
 		312066F51A480878008F518C /* ChatList_TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatList_TableViewController.swift; sourceTree = "<group>"; };
 		312066F91A480B62008F518C /* MainBar_UITabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainBar_UITabBarController.swift; sourceTree = "<group>"; };
 		312066FB1A481400008F518C /* ChatList_TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatList_TableViewCell.swift; sourceTree = "<group>"; };
+		3120E99D1A7202BF0003D12C /* CreateGroup_ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CreateGroup_ViewController.swift; path = Groups/CreateGroup_ViewController.swift; sourceTree = "<group>"; };
+		3120E9A11A724E330003D12C /* More_TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = More_TableViewController.swift; sourceTree = "<group>"; };
 		3122042A1A5A56910071709F /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
 		3122042B1A5A56910071709F /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
 		3122042C1A5A56910071709F /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
@@ -817,6 +821,7 @@
 				31BE9DDC1A47FC9B00BA00FA /* Friends */,
 				311E69581A6F590000688F93 /* Groups */,
 				31B919361A47EB91006A934F /* Delegate */,
+				3120E9A01A724DFF0003D12C /* More */,
 				311650D11A42C8400027F563 /* kdip-Bridging-Header.h */,
 				31164AA61A42BC720027F563 /* AppDelegate.swift */,
 				31B919341A47E7AB006A934F /* Login_ViewController.swift */,
@@ -1756,9 +1761,19 @@
 			children = (
 				311E695A1A6F592A00688F93 /* Groups_ViewController.swift */,
 				3152321B1A708B350018C0BE /* Groups_TableViewCell.swift */,
+				3120E99D1A7202BF0003D12C /* CreateGroup_ViewController.swift */,
 			);
 			name = Groups;
 			sourceTree = "<group>";
+		};
+		3120E9A01A724DFF0003D12C /* More */ = {
+			isa = PBXGroup;
+			children = (
+				3120E9A11A724E330003D12C /* More_TableViewController.swift */,
+			);
+			name = More;
+			path = kdipchat/More;
+			sourceTree = SOURCE_ROOT;
 		};
 		312204291A5A56910071709F /* fmdb */ = {
 			isa = PBXGroup;
@@ -2237,6 +2252,7 @@
 				31162FC71A5E2D5300A13C34 /* SingleChat_CollectionViewCell.swift in Sources */,
 				313083FD1A47B61D00DC25DC /* JSQMessagesMediaViewBubbleImageMasker.m in Sources */,
 				311650A31A42C4510027F563 /* XMPPBlocking.m in Sources */,
+				3120E99E1A7202BF0003D12C /* CreateGroup_ViewController.swift in Sources */,
 				311650551A42C4510027F563 /* XMPPFileTransfer.m in Sources */,
 				3116506D1A42C4510027F563 /* XMPPRoomMessageCoreDataStorageObject.m in Sources */,
 				313084031A47B61D00DC25DC /* JSQLocationMediaItem.m in Sources */,
@@ -2314,6 +2330,7 @@
 				3116508E1A42C4510027F563 /* NSDate+XMPPDateTimeProfiles.m in Sources */,
 				312204361A5A56910071709F /* FMDatabaseAdditions.m in Sources */,
 				3152321C1A708B350018C0BE /* Groups_TableViewCell.swift in Sources */,
+				3120E9A21A724E330003D12C /* More_TableViewController.swift in Sources */,
 				311650901A42C4510027F563 /* XMPPMessage+XEP_0085.m in Sources */,
 				313084041A47B61D00DC25DC /* JSQMediaItem.m in Sources */,
 				311650AD1A42C4510027F563 /* XMPPAttentionModule.m in Sources */,

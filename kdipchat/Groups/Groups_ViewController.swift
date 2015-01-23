@@ -12,6 +12,9 @@ class Groups_ViewController: UIViewController, UITableViewDataSource, UITableVie
     var DelegateApp = UIApplication.sharedApplication().delegate as AppDelegate
     var groupList = [GroupList]()
     var selectedCell: NSIndexPath!
+    var searchController: UISearchDisplayController!
+    
+    @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,8 +22,32 @@ class Groups_ViewController: UIViewController, UITableViewDataSource, UITableVie
         
         // Do any additional setup after loading the view.
     }
+    
+    override func viewDidAppear(animated: Bool) {
+        self.groupList = ChatConversation.getGroupList()
+        self.tableView.reloadData()
+    }
 
     @IBAction func searchGroup(sender: UIBarButtonItem) {
+        var theSearchBar = UISearchBar(frame: CGRectMake(0, 0, 320, 40))
+        theSearchBar.delegate = self;
+
+        theSearchBar.placeholder = "Search Here"
+        theSearchBar.showsCancelButton = true
+        
+        self.tableView.tableHeaderView = theSearchBar
+        
+        self.searchController = UISearchDisplayController(searchBar: theSearchBar, contentsController: self)
+
+        searchController.delegate = self
+        searchController.searchResultsDataSource = self
+        searchController.searchResultsDelegate = self
+        
+        searchController.setActive(true, animated: true)
+        theSearchBar.becomeFirstResponder()
+    }
+    
+    @IBAction func createGroup(sender: UIBarButtonItem) {
         
     }
     
@@ -44,79 +71,31 @@ class Groups_ViewController: UIViewController, UITableViewDataSource, UITableVie
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         self.selectedCell = indexPath
-        performSegueWithIdentifier("showSingleChat", sender: self)
+        performSegueWithIdentifier("showGroupChat", sender: self)
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cellgroups") as Groups_TableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("cellgroups",forIndexPath: indexPath) as Groups_TableViewCell
         cell.groupName.text = self.groupList[indexPath.row].name
         return cell
     }
     
-    
-    @IBAction func btn2Pressed(sender: UIButton) {
-//        <presence
-//        from='hag66@shakespeare.lit/pda'
-//        id='n13mt3l'
-//        to='coven@chat.shakespeare.lit/thirdwitch'>
-//        <x xmlns='http://jabber.org/protocol/muc'>
-//        <history seconds='180'/>
-//        </x>
-//        </presence>
-        var presence = XMPPPresence()
-        var x = DDXMLElement.elementWithName("x") as DDXMLElement
-        var history = DDXMLElement.elementWithName("history") as DDXMLElement
-        presence.addAttributeWithName("from", stringValue: DelegateApp.getJabberID())
-        presence.addAttributeWithName("id", stringValue: "groupchathistory")
-        presence.addAttributeWithName("to", stringValue: "room1@conference.vb.icbali.com/\(DelegateApp.getJabberName())")
-        x.addAttributeWithName("xmlns", stringValue: "http://jabber.org/protocol/muc")
-        history.addAttributeWithName("seconds", stringValue: "360")
-        x.addChild(history)
-        presence.addChild(x)
-        DelegateApp.xmppStream.sendElement(presence)
-    }
-    @IBAction func btnPressed(sender: UIButton) {
-        // Join to Room
-        var presence = XMPPPresence()
-        var x = DDXMLElement.elementWithName("x") as DDXMLElement
-        var history = DDXMLElement.elementWithName("history") as DDXMLElement
-        presence.addAttributeWithName("from", stringValue: DelegateApp.getJabberID())
-        presence.addAttributeWithName("id", stringValue: "requestjoinroom")
-        presence.addAttributeWithName("to", stringValue: "room1@conference.vb.icbali.com/\(DelegateApp.getJabberName())")
-        x.addAttributeWithName("xmlns", stringValue: "http://jabber.org/protocol/muc")
-        history.addAttributeWithName("seconds", stringValue: "60")
-        x.addChild(history)
-        presence.addChild(x)
-        DelegateApp.xmppStream.sendElement(presence)
-        
-        
-//        <iq from='hag66@shakespeare.lit/pda'
-//        id='kl2fax27'
-//        to='coven@chat.shakespeare.lit'
-//        type='get'>
-//        <query xmlns='http://jabber.org/protocol/disco#items'/>
-//        </iq>
-        
-        // Example Query Available Room List
-//        var iq = XMPPIQ()
-//        var query = DDXMLElement.elementWithName("query") as DDXMLElement
-//        iq.addAttributeWithName("from", stringValue: DelegateApp.getJabberID())
-//        iq.addAttributeWithName("id", stringValue: "availableroom")
-//        iq.addAttributeWithName("to", stringValue: "conference.vb.icbali.com")
-//        iq.addAttributeWithName("type", stringValue: "get")
-//        query.addAttributeWithName("xmlns", stringValue: "http://jabber.org/protocol/disco#items")
-//        iq.addChild(query)
-//        DelegateApp.xmppStream.sendElement(iq)
-    }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        switch segue.identifier!
+        {
+        case "showGroupChat":
+            let controller = segue.destinationViewController as GroupChat_ViewController
+            controller.groupDisplayName = XmppUtility.splitJabberId(groupList[self.selectedCell.row].group_id)["accountName"]!
+            controller.groupId = groupList[self.selectedCell.row].group_id
+            controller.senderId = DelegateApp.getJabberID()
+            controller.senderDisplayName = DelegateApp.getJabberName()
+            controller.navigationItem.title = XmppUtility.splitJabberId(groupList[self.selectedCell.row].group_id)["accountName"]!
+            controller.hidesBottomBarWhenPushed = true
+            break
+        default:
+            break
+        }
     }
-    */
 
 }

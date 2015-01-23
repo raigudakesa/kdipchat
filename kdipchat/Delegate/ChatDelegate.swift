@@ -20,5 +20,8 @@ import Foundation
     optional func chatDelegate(didBuddyListFinishedReceive message: String)
     optional func chatDelegate(ofCurrent: Int, didBuddyListProcessingReceive ofTotal: Int)
     
+    optional func chatDelegate(roomid: String, affiliation: String, role: String, didRoomCreated created: Bool, error_code: Int)
+    optional func chatDelegate(roomid: String, didRoomUpdated updated: Bool)
+    
     optional func chatDelegate(didAlertReceived alertCode: Int)
 }

@@ -16,6 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
     var chatDelegate: ChatDelegate?
     var chatListDelegate: ChatDelegate?
     var chatSingleDelegate: ChatDelegate?
+    var groupCreateDelegate: ChatDelegate?
+    var groupListDelegate: ChatDelegate?
     var customCertEvaluation: Bool = false
     
     var window: UIWindow?
@@ -375,8 +377,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
             case "body":
                 
                 if mesg != nil {
-                    
+                    var gid = "-1"
+                    if message.attributeStringValueForName("id")? != nil
+                    {
+                       if message.attributeStringValueForName("id") == "sendgroupmessage"
+                       {
+                            gid = self.getJabberName()
+                        }
+                    }
                     ChatConversation.SaveMessage(jid: jid,
+                        group_id: gid,
                         message: mesg.stringValue(),
                         date: date,
                         is_sender: true,
@@ -406,6 +416,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
     func xmppStream(sender: XMPPStream!, didReceivePresence presence: XMPPPresence!) {
         println("Receive Presence : \(presence)")
         
+        let id = presence.attributeStringValueForName("id")?
+        
         if presence.attributeStringValueForName("type") != nil {
             switch presence.attributeStringValueForName("type") {
             case "subscribe":
@@ -414,6 +426,54 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
                 break;
             }
         }
+        
+        if id != nil {
+            switch id! {
+            case "requestcreateroom":
+                var item: [[String: String]] = [[:]]
+                var code_201 = false
+                var code_100 = false
+                var code_110 = false
+                item.removeAll(keepCapacity: false)
+                
+                for children in presence.children()
+                {
+                    if children.name == "x"
+                    {
+                        for children2 in children.children()
+                        {
+                            if children2.name == "status"
+                            {
+                                if children2.attributeStringValueForName("code") == "201"
+                                {
+                                    code_201 = true
+                                }else if children2.attributeStringValueForName("code") == "100" {
+                                    code_100 = true
+                                }else if children2.attributeStringValueForName("code") == "110" {
+                                    code_110 = true
+                                }
+                            }else if children2.name == "item" {
+                                item.append(["affiliation": children2.attributeStringValueForName("affiliation"),
+                                    "role": children2.attributeStringValueForName("role"),
+                                    "jid": children2.attributeStringValueForName("jid"),
+                                    ])
+                            }
+                        }
+                    }
+                }
+                
+                if code_100 && code_201 {
+                    self.chatDelegate(XmppUtility.splitJabberId("\(presence.from())")["fullJID"]!, affiliation: item[0]["affiliation"]!, role: item[0]["role"]!, didRoomCreated: true, error_code: 0)
+                }else if code_110 && !code_100 {
+                    self.chatDelegate(XmppUtility.splitJabberId("\(presence.from())")["fullJID"]!, affiliation: "", role: "", didRoomCreated: false, error_code: 1)
+                }
+                break
+            default:
+                break
+            }
+        }
+        
+        
     }
     
     func xmppStream(sender: XMPPStream!, didSendPresence presence: XMPPPresence!) {
@@ -431,6 +491,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
         
         switch id!
         {
+        case "setroomconfig":
+            if iq.attributeStringValueForName("type") == "result"
+            {
+                self.chatDelegate("\(iq.from())", didRoomUpdated: true)
+            }
+            break
         case "floginrosterrequest":
             ChatConversation.clearDataStore()
             
@@ -574,6 +640,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMPPStreamDelegate, XMPPR
     func chatDelegate(senderId: String, senderName: String, didMultimediaReceived data: String, date: NSDate) {
         self.chatListDelegate?.chatDelegate?(senderId, senderName: senderName, didMultimediaReceived: data, date: date)
         self.chatSingleDelegate?.chatDelegate?(senderId, senderName: senderName, didMultimediaReceived: data, date: date)
+    }
+    
+    func chatDelegate(roomid: String, affiliation: String, role: String, didRoomCreated created: Bool, error_code: Int)
+    {
+        self.groupCreateDelegate?.chatDelegate?(roomid, affiliation: affiliation, role: role, didRoomCreated: created, error_code: error_code)
+    }
+    func chatDelegate(roomid: String, didRoomUpdated updated: Bool) {
+        self.groupCreateDelegate?.chatDelegate?(roomid, didRoomUpdated: updated)
     }
     
     //==========================
